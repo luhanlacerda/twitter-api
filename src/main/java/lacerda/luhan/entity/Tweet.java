@@ -15,6 +15,7 @@ public class Tweet {
     private Long id;
     private String message;
     private User user;
+    private User anotherUser;
     private Date date;
 
     public Tweet() {
@@ -43,6 +44,14 @@ public class Tweet {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public User getAnotherUser() {
+        return anotherUser;
+    }
+
+    public void setAnotherUser(User anotherUser) {
+        this.anotherUser = anotherUser;
     }
 
     public Date getDate() {
