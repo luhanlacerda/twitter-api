@@ -10,23 +10,26 @@ import org.springframework.web.bind.annotation.RestController;
 import lacerda.luhan.entity.User;
 import lacerda.luhan.repository.UserRepository;
 
+/*
+Classe de controller responsavel pela insercao de dois usuarios no banco
+ */
 @RestController
 @RequestMapping(path = "/init", produces = MediaType.APPLICATION_JSON_VALUE)
 public class InitDBController {
 
-	@Autowired
-	UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-	@PostMapping
-	private ResponseEntity<?> create() {
+    @PostMapping
+    private ResponseEntity<?> create() {
 
-		User user = new User("Luhan");
-		User user2 = new User("Igor");
+        User user = new User("Luhan");
+        User user2 = new User("Igor");
 
-		userRepository.save(user);
-		userRepository.save(user2);
+        userRepository.save(user);
+        userRepository.save(user2);
 
-		return ResponseEntity.ok().build();
-	}
+        return ResponseEntity.ok().build();
+    }
 
 }

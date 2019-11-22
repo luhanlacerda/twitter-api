@@ -4,6 +4,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/*
+Classe de controller responsavel para a conversao de data do tipo date para string e string para date
+ */
 public class ConvertDate {
 
     private static final String DATE_EXIT = "dd/MM/yyyyy";

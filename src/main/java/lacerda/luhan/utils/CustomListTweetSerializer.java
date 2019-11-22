@@ -12,13 +12,13 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import lacerda.luhan.entity.Tweet;
 
 @SuppressWarnings("serial")
-public class CustomListSerializer extends StdSerializer<List<Tweet>> {
+public class CustomListTweetSerializer extends StdSerializer<List<Tweet>> {
 
-	public CustomListSerializer() {
+	public CustomListTweetSerializer() {
 		this(null);
 	}
 
-	public CustomListSerializer(Class<List<Tweet>> t) {
+	public CustomListTweetSerializer(Class<List<Tweet>> t) {
 		super(t);
 	}
 

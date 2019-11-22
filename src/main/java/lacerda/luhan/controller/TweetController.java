@@ -13,55 +13,67 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+/*
+Classe de controller responsavel pela criacao de tweet e listagem no feed
+ */
 @RestController
 @RequestMapping(path = "/tweeters", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TweetController {
 
-	@Autowired
-	TweetRepository tweetRepository;
+    @Autowired
+    TweetRepository tweetRepository;
 
-	@Autowired
-	UserRepository UserRepository;
+    @Autowired
+    UserRepository userRepository;
 
-//    @PostMapping
-//    private ResponseEntity<?> create(@Valid @RequestBody TweetDTO tweetDTO) {
-//
-//        Tweet tweet = buildTweetEntity(new Tweet(), tweetDTO);
-//
-//        tweetRepository.save(tweet);
-//
-//        return ResponseEntity.ok().build();
-//    }
+    // método para criar o tweet
+    @PostMapping
+    private ResponseEntity<?> create(@Valid @RequestBody TweetDTO tweetDTO) {
 
-	@PostMapping("/user/{userId}")
-	private ResponseEntity<?> tweet(@PathVariable("userId") Long userId, @RequestBody String message) {
+        Tweet tweet = buildTweetEntity(new Tweet(), tweetDTO);
 
-		Optional<User> user = UserRepository.findById(userId);
-		Tweet tweet = new Tweet();
-		tweet.setUser(user.get());
-		tweet.setMessage(message);
-		tweetRepository.save(tweet);
+        tweetRepository.save(tweet);
 
-		return ResponseEntity.ok().build();
-	}
+        return ResponseEntity.ok().build();
+    }
 
-	@GetMapping("/{id}")
-	private ResponseEntity<?> getNewsFeed(@PathVariable(required = true) Long userId) {
-		Optional<Tweet> findById = tweetRepository.findByUserId(userId);
+    @GetMapping("/feed")
+    private ResponseEntity<?> getNewsFeed(@Valid @RequestBody TweetDTO tweetDTO) {
+        // Pega os tweeters do usuario que foi passado pelo body
+        List<Tweet> getAllTweetersByUserId = tweetRepository.findByUserId(tweetDTO.getUserId());
 
-		if (findById.isPresent())
-			return ResponseEntity.ok(findById.get());
+        // Seleciona o usuario para retornar o objeto e ter acesso aos ids das pessoas que ele segue
+        Optional<User> userById = userRepository.findById(tweetDTO.getUserId());
 
-		return ResponseEntity.notFound().build();
-	}
+        // Faz a consulta ao banco para retornar os tweeters dos users que são seguidos
+        List<User> getOthersUsers = userById.get().getFollowees()
+                .stream().map(f -> userRepository.findById(f.getId())
+                        .get()).collect(Collectors.toList());
 
-	private Tweet buildTweetEntity(Tweet tweet, @Valid TweetDTO tweetDTO) {
-		tweet.setDate(new Date());
-		tweet.setMessage(tweetDTO.getMessage());
-		tweet.setUser(tweetDTO.getUser());
-		return tweet;
-	}
+        // percorre a lista contendo todos usuarios seguidos, pega os tweeters dele e adiciona na lista que conterá
+        // todos os tweeters
+        for (User user : getOthersUsers) {
+            getAllTweetersByUserId.addAll(user.getTweets());
+        }
+
+        // valida se a lista está limpa, caso não esteja retorna sucesso e a mesma
+        if (!getAllTweetersByUserId.isEmpty())
+            return ResponseEntity.ok(getAllTweetersByUserId);
+
+        return ResponseEntity.notFound().build();
+    }
+
+    // metodo para fazer o build do novo tweet com os dados que serão passados pelo body
+    private Tweet buildTweetEntity(Tweet tweet, @Valid TweetDTO tweetDTO) {
+        tweet.setDate(new Date());
+        tweet.setMessage(tweetDTO.getMessage());
+        Optional<User> user = userRepository.findById(tweetDTO.getUserId());
+        tweet.setUser(user.get());
+        return tweet;
+    }
 
 }

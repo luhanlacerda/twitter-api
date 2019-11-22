@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
+import lacerda.luhan.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,72 +21,71 @@ import org.springframework.web.server.ResponseStatusException;
 import lacerda.luhan.entity.User;
 import lacerda.luhan.repository.UserRepository;
 
+/*
+Classe de controller responsavel pela criacao de usuario, listagem, follow e unfollow de outros usuarios
+ */
 @RestController
 @RequestMapping(path = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
-	@Autowired
-	UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-	@GetMapping
-	private ResponseEntity<?> index() throws IOException, URISyntaxException {
-		return ResponseEntity.ok(userRepository.findAll());
-	}
+    @GetMapping
+    private ResponseEntity<?> index() throws IOException, URISyntaxException {
+        return ResponseEntity.ok(userRepository.findAll());
+    }
 
-	@GetMapping("/{id}")
-	private ResponseEntity<?> findOne(@PathVariable(required = true) Long id) {
-		Optional<User> findById = userRepository.findById(id);
+    @GetMapping("/{id}")
+    private ResponseEntity<?> findOne(@PathVariable(required = true) Long id) {
+        Optional<User> findById = userRepository.findById(id);
 
-		if (findById.isPresent())
-			return ResponseEntity.ok(findById.get());
+        if (findById.isPresent())
+            return ResponseEntity.ok(findById.get());
 
-		return ResponseEntity.notFound().build();
-	}
+        return ResponseEntity.notFound().build();
+    }
 
-	@PutMapping("/follow/{userId}/{anotherUserId}")
-	private ResponseEntity<?> follow(@PathVariable("userId") Long userId,
-			@PathVariable("anotherUserId") Long anotherUserId) {
+    @PutMapping("/follow")
+    private ResponseEntity<?> followUser(@RequestBody UserDTO userDTO) {
 
-		Optional<User> findById = userRepository.findById(userId);
+        Optional<User> findById = userRepository.findById(userDTO.getUserId());
 
-		if (!findById.isPresent())
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
+        if (!findById.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
 
-		User user = findById.get();
-		Optional<User> anotherUserById = userRepository.findById(anotherUserId);
+        User user = findById.get();
+        Optional<User> anotherUserById = userRepository.findById(userDTO.getAnotherUserId());
 
-		if (!anotherUserById.isPresent())
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário a ser seguido não encontrado");
+        if (!anotherUserById.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário a ser seguido não encontrado");
 
-		User anotherUser = anotherUserById.get();
+        User anotherUser = anotherUserById.get();
 
-		user.addFollowee(anotherUser);
+        user.addFollowee(anotherUser);
+        userRepository.save(user);
 
-		userRepository.save(user);
+        return ResponseEntity.ok().build();
+    }
 
-		Optional<User> user2 = userRepository.findById(user.getId());
+    @PostMapping("/unfollow")
+    private ResponseEntity<?> unfollow(@RequestBody UserDTO userDTO) {
 
-		return ResponseEntity.ok().build();
-	}
+        Optional<User> findById = userRepository.findById(userDTO.getUserId());
 
-	@PostMapping("/unfollow")
-	private ResponseEntity<?> unfollow(@RequestBody Long userId, Long anotherUserId) {
+        if (!findById.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
 
-		Optional<User> findById = userRepository.findById(userId);
+        User user = findById.get();
+        Optional<User> anotherUserById = userRepository.findById(userDTO.getAnotherUserId());
 
-		if (!findById.isPresent())
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
+        if (!anotherUserById.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário a ser seguido não encontrado");
 
-		User user = findById.get();
-		Optional<User> anotherUserById = userRepository.findById(anotherUserId);
+        user.removeFollowee(anotherUserById.get());
 
-		if (!anotherUserById.isPresent())
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário a ser seguido não encontrado");
-
-		user.removeFollowee(anotherUserById.get());
-
-		userRepository.save(user);
-		return ResponseEntity.ok().build();
-	}
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
+    }
 
 }

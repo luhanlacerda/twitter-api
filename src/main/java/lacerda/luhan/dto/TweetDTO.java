@@ -4,47 +4,50 @@ import javax.validation.constraints.NotNull;
 
 import lacerda.luhan.entity.User;
 
+/*
+Classe modelo que representa o tweet vindo da request
+ */
 public class TweetDTO {
 
-	private Long id;
+    private Long id;
 
-	@NotNull
-	private String message;
+    @NotNull
+    private String message;
 
-	@NotNull
-	private User user;
+    @NotNull
+    private Long userId;
 
-	private String date;
+    private String date;
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getMessage() {
-		return message;
-	}
+    public String getMessage() {
+        return message;
+    }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-	public User getUser() {
-		return user;
-	}
+    public Long getUserId() {
+        return userId;
+    }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
-	public String getDate() {
-		return date;
-	}
+    public String getDate() {
+        return date;
+    }
 
-	public void setDate(String date) {
-		this.date = date;
-	}
+    public void setDate(String date) {
+        this.date = date;
+    }
 }
