@@ -1,66 +1,73 @@
 package lacerda.luhan.entity;
 
+import java.util.Date;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Date;
-import java.util.Objects;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Tweet {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
-    private String message;
-    private User user;
-    private User anotherUser;
-    private Date date;
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	private Long id;
 
-    public Tweet() {
-        this.user = new User();
-    }
+	@Column(nullable = false)
+	private String message;
 
-    public Long getId() {
-        return id;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", insertable = true, updatable = true)
+	private User user;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	@Temporal(TemporalType.DATE)
+	private Date date;
 
-    public String getMessage() {
-        return message;
-    }
+	public Tweet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public User getUser() {
-        return user;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+	public String getMessage() {
+		return message;
+	}
 
-    public User getAnotherUser() {
-        return anotherUser;
-    }
+	public void setMessage(String message) {
+		this.message = message;
+	}
 
-    public void setAnotherUser(User anotherUser) {
-        this.anotherUser = anotherUser;
-    }
+	public User getUser() {
+		return user;
+	}
 
-    public Date getDate() {
-        return date;
-    }
+	public void setUser(User user) {
+		this.user = user;
+	}
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+	public Date getDate() {
+		return date;
+	}
 
+	public void setDate(Date date) {
+		this.date = date;
+	}
 
 }

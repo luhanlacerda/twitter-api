@@ -1,23 +1,38 @@
 package lacerda.luhan.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class UserDTO {
 
-    private Long id;
-    private String name;
+	private Long id;
 
-    public Long getId() {
-        return id;
-    }
+	@NotNull
+	private String name;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	private Long userFollowId;
 
-    public String getName() {
-        return name;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Long getUserFollowId() {
+		return userFollowId;
+	}
+
+	public void setUserFollowId(Long userFollowId) {
+		this.userFollowId = userFollowId;
+	}
+
 }

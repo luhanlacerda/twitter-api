@@ -2,7 +2,10 @@ package lacerda.luhan.controller;
 
 import lacerda.luhan.dto.TweetDTO;
 import lacerda.luhan.entity.Tweet;
+import lacerda.luhan.entity.User;
 import lacerda.luhan.repository.TweetRepository;
+import lacerda.luhan.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,34 +19,49 @@ import java.util.Optional;
 @RequestMapping(path = "/tweeters", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TweetController {
 
-    @Autowired
-    TweetRepository tweetRepository;
+	@Autowired
+	TweetRepository tweetRepository;
 
-    @PostMapping
-    private ResponseEntity<?> create(@Valid @RequestBody TweetDTO tweetDTO) {
+	@Autowired
+	UserRepository UserRepository;
 
-        Tweet tweet = buildTweetEntity(new Tweet(), tweetDTO);
+//    @PostMapping
+//    private ResponseEntity<?> create(@Valid @RequestBody TweetDTO tweetDTO) {
+//
+//        Tweet tweet = buildTweetEntity(new Tweet(), tweetDTO);
+//
+//        tweetRepository.save(tweet);
+//
+//        return ResponseEntity.ok().build();
+//    }
 
-        tweetRepository.save(tweet);
+	@PostMapping("/user/{userId}")
+	private ResponseEntity<?> tweet(@PathVariable("userId") Long userId, @RequestBody String message) {
 
-        return ResponseEntity.ok().build();
-    }
+		Optional<User> user = UserRepository.findById(userId);
+		Tweet tweet = new Tweet();
+		tweet.setUser(user.get());
+		tweet.setMessage(message);
+		tweetRepository.save(tweet);
 
-    @GetMapping("/{id}")
-    private ResponseEntity<?> getNewsFeed(@PathVariable(required = true) Long userId) {
-        Optional<Tweet> findById = tweetRepository.findByUserId(userId);
+		return ResponseEntity.ok().build();
+	}
 
-        if (findById.isPresent())
-            return ResponseEntity.ok(findById.get());
+	@GetMapping("/{id}")
+	private ResponseEntity<?> getNewsFeed(@PathVariable(required = true) Long userId) {
+		Optional<Tweet> findById = tweetRepository.findByUserId(userId);
 
-        return ResponseEntity.notFound().build();
-    }
+		if (findById.isPresent())
+			return ResponseEntity.ok(findById.get());
 
-    private Tweet buildTweetEntity(Tweet tweet, @Valid TweetDTO tweetDTO) {
-        tweet.setDate(new Date());
-        tweet.setMessage(tweetDTO.getMessage());
-        tweet.setUser(tweetDTO.getUser());
-        return tweet;
-    }
+		return ResponseEntity.notFound().build();
+	}
+
+	private Tweet buildTweetEntity(Tweet tweet, @Valid TweetDTO tweetDTO) {
+		tweet.setDate(new Date());
+		tweet.setMessage(tweetDTO.getMessage());
+		tweet.setUser(tweetDTO.getUser());
+		return tweet;
+	}
 
 }
