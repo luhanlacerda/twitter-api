@@ -49,13 +49,13 @@ Backend: Java + Spring  -  H2  -  Vue.js
    
    ##
     http://localhost:8080/tweeters/feed
-   - Recuperar tweeters de determinado usuário e os que ele segue
+   - Recuperar tweeters de um determinado usuário e dos que ele segue
    - Método: GET
    - Body: { "userId": 2 }
    
    ##
     http://localhost:8080/tweeters/{userId}
-   - Recuperar tweeters de determinado usuário e os que ele segue
+   - Recuperar tweeters de um determinado usuário e dos que ele segue
    - Método: GET
    
    
