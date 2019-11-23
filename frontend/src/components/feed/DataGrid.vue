@@ -1,38 +1,38 @@
 <template>
-  <div class="border-table">
-    <v-toolbar flat color="white">
+  <div class='border-table'>
+    <v-toolbar flat color='white'>
       <v-toolbar-title>
-        <Breadcumb/>
+        <Breadcumb />
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-text-field
-        color="indigo"
-        v-model="search"
-        append-icon="search"
-        label="Search"
+        color='indigo'
+        v-model='search'
+        append-icon='search'
+        label='Search'
         single-line
         hide-details
       ></v-text-field>
       <v-spacer></v-spacer>
-      <v-btn color="indigo" dark class="mb-2" @click="newItem('/tweeters/new')">Novo</v-btn>
+      <v-btn color='indigo' dark class='mb-2' @click="newItem('/tweeters/feed/new')">Novo</v-btn>
     </v-toolbar>
 
     <v-divider></v-divider>
 
     <v-data-table
-      :headers="headers"
-      :items="tableData"
-      :pagination.sync="pagination"
+      :headers='headers'
+      :items='tableData'
+      :pagination.sync='pagination'
       hide-actions
-      class="elevation-1"
-      :search="search"
+      class='elevation-1'
+      :search='search'
     >
-      <template slot="items" slot-scope="props">
+      <template slot='items' slot-scope='props'>
         <td
-          class="text-xs-left"
-          @mouseover="showInfoDoubleClick = true"
-          @mouseout="showInfoDoubleClick = false"
-          @dblclick="editItem(props.item)"
+          class='text-xs-left'
+          @mouseover='showInfoDoubleClick = true'
+          @mouseout='showInfoDoubleClick = false'
+          @dblclick='editItem(props.item)'
         >{{ props.item.id }}</td>
         <td
           class="text-xs-left"
@@ -40,18 +40,13 @@
           @mouseout="showInfoDoubleClick = false"
           @dblclick="editItem(props.item)"
         >{{ props.item.message }}</td>
-         <td
+        <td
           class="text-xs-left"
           @mouseover="showInfoDoubleClick = true"
           @mouseout="showInfoDoubleClick = false"
           @dblclick="editItem(props.item)"
         >{{ props.item.user.name }}</td>
 
-        <!-- actions -->
-        <td class="px-2">
-          <v-icon class="mr-2" @click="editItem(props.item)">edit</v-icon>
-          <v-icon @click="deleteItem(props.item)">delete</v-icon>
-        </td>
       </template>
     </v-data-table>
     <v-layout row justify-space-between mt-2>
@@ -76,6 +71,12 @@ import Events, { EventName } from '@/util/Events';
 
 export default {
   components: { Breadcumb },
+  props: {
+    id: {
+      type: String,
+      required: true
+    }
+  },
   data: () => ({
     title: 'Tweeters',
     tableData: [],
@@ -90,12 +91,12 @@ export default {
       { text: 'User', value: 'user.name' }
     ]
   }),
-  mounted () {
+  mounted() {
     this.getAll();
   },
   methods: {
-    getAll: async function () {
-      const [err, data] = await HttpRequest.get('/tweeters');
+    getAll: async function() {
+      const [err, data] = await HttpRequest.get(`/tweeters/feed/${this.id}`);
       if (err) {
         Events.$emit(EventName.SNACK_ERROR, 'Erro ao buscar os tweeters');
         return;
@@ -103,16 +104,16 @@ export default {
       this.tableData = data.data;
       this.pagination.totalItems = data.data.length;
     },
-    editItem (item) {
+    editItem(item) {
       this.$router.push(`/tweeters/${item.id}/edit`);
     },
-    newItem (path) {
-      this.$router.push(path);
+    newItem: async function(path) {
+      this.$router.push(`/tweeters/feed/new/${this.id}`);
     }
   },
   filters: {},
   computed: {
-    pages () {
+    pages() {
       if (
         this.pagination.rowsPerPage == null ||
         this.pagination.totalItems == null

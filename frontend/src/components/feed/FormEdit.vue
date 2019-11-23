@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Form from '@/components/tweeters/Form';
+import Form from '@/components/feed/Form';
 import HttpRequest from '@/api/HttpRequest';
 import Events, { EventName } from '@/util/Events';
 

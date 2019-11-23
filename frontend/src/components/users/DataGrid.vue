@@ -47,7 +47,7 @@
       <v-flex xs4 pl-2 pt-1>
         <div v-if="showInfoDoubleClick">
           <v-icon>info</v-icon>
-          <span pb-4>Dê duplo clique na linha para visualizar o feed.</span>
+          <span pb-4>Dê duplo clique na linha para visualizar o feed do user.</span>
         </div>
       </v-flex>
       <v-flex xs4 pl-2 pt-1 text-md-center>
@@ -91,8 +91,8 @@ export default {
       this.tableData = data.data;
       this.pagination.totalItems = data.data.length;
     },
-    viewFeed (item) {
-      HttpRequest.get(`/tweeters/feed/${item.id}`);
+    viewFeed: async function(item) {
+      this.$router.push(`/tweeters/feed/${item.id}`);
     },
     newItem (path) {
       this.$router.push(path);

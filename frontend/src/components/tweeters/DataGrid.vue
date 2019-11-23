@@ -106,6 +106,19 @@ export default {
     editItem (item) {
       this.$router.push(`/tweeters/${item.id}/edit`);
     },
+    async deleteItem (item) {
+      if (!confirm('Deseja deletar o registro?')) return;
+      const [err] = await HttpRequest.delete(`/tweeters/${item.id}`);
+      if (err)
+        Events.$emit(EventName.SNACK_ERROR, 'Erro ao excluir o tweet');
+      else {
+        Events.$emit(
+          EventName.SNACK_SUCCESS,
+          'Tweet excluído com sucesso!'
+        );
+        this.getAll();
+      }
+    },
     newItem (path) {
       this.$router.push(path);
     }

@@ -31,7 +31,16 @@ const routes = [
       title: 'Tweeters'
     },
     icon: 'devices',
-    items: ['new_tweeters', 'edit_tweeters']
+    items: ['new_feed_tweeters', 'edit_tweeters'],
+    props: true
+  },
+  {
+    path: '/tweeters/feed/new/:id',
+    name: 'new_feed_tweeters',
+    component: () => import('@/components/feed/FormNew'),
+    meta: {
+      title: 'Novo Tweet'
+    }
   },
   {
     path: '/tweeters',
