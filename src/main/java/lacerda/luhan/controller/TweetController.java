@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +31,11 @@ public class TweetController {
 
     @Autowired
     UserRepository userRepository;
+
+    @GetMapping
+    private ResponseEntity<?> index() throws IOException, URISyntaxException {
+        return ResponseEntity.ok(tweetRepository.findAll());
+    }
 
     // método para criar o tweet
     @PostMapping
@@ -48,6 +55,32 @@ public class TweetController {
 
         // Seleciona o usuario para retornar o objeto e ter acesso aos ids das pessoas que ele segue
         Optional<User> userById = userRepository.findById(tweetDTO.getUserId());
+
+        // Faz a consulta ao banco para retornar os tweeters dos users que são seguidos
+        List<User> getOthersUsers = userById.get().getFollowees()
+                .stream().map(f -> userRepository.findById(f.getId())
+                        .get()).collect(Collectors.toList());
+
+        // percorre a lista contendo todos usuarios seguidos, pega os tweeters dele e adiciona na lista que conterá
+        // todos os tweeters
+        for (User user : getOthersUsers) {
+            getAllTweetersByUserId.addAll(user.getTweets());
+        }
+
+        // valida se a lista está limpa, caso não esteja retorna sucesso e a mesma
+        if (!getAllTweetersByUserId.isEmpty())
+            return ResponseEntity.ok(getAllTweetersByUserId);
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/feed/{userId}")
+    private ResponseEntity<?> getNewsFeed2(@PathVariable(name="userId") Long userId) {
+        // Pega os tweeters do usuario que foi passado pelo body
+        List<Tweet> getAllTweetersByUserId = tweetRepository.findByUserId(userId);
+
+        // Seleciona o usuario para retornar o objeto e ter acesso aos ids das pessoas que ele segue
+        Optional<User> userById = userRepository.findById(userId);
 
         // Faz a consulta ao banco para retornar os tweeters dos users que são seguidos
         List<User> getOthersUsers = userById.get().getFollowees()

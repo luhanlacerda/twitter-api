@@ -21,6 +21,8 @@ import org.springframework.web.server.ResponseStatusException;
 import lacerda.luhan.entity.User;
 import lacerda.luhan.repository.UserRepository;
 
+import javax.validation.Valid;
+
 /*
 Classe de controller responsavel pela criacao de usuario, listagem, follow e unfollow de outros usuarios
  */
@@ -34,6 +36,17 @@ public class UserController {
     @GetMapping
     private ResponseEntity<?> index() throws IOException, URISyntaxException {
         return ResponseEntity.ok(userRepository.findAll());
+    }
+
+    // método para criar o tweet
+    @PostMapping
+    private ResponseEntity<?> create(@Valid @RequestBody UserDTO userDTO) {
+
+        User user = new User(userDTO.getName());
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}")
