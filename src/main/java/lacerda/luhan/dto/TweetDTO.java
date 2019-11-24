@@ -11,7 +11,6 @@ public class TweetDTO {
 
     private Long id;
 
-    @NotNull
     private String message;
 
     @NotNull

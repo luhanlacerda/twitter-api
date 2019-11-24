@@ -3,7 +3,7 @@
     <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="teal lighten-2" dark app fixed>
       <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
         <v-toolbar-side-icon v-on:click.stop="emitChange" class="toolbar-side-icon"></v-toolbar-side-icon>
-        <img src="./../assets/img/igrejario.jpg" class="imgs-header" />
+        <!-- <img src="./../assets/img/teste.png" class="imgs-header" /> -->
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon @click="handleFullScreen()">

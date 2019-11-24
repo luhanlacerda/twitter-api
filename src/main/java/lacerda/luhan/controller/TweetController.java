@@ -56,18 +56,18 @@ public class TweetController {
         // Seleciona o usuario para retornar o objeto e ter acesso aos ids das pessoas que ele segue
         Optional<User> userById = userRepository.findById(tweetDTO.getUserId());
 
-        // Faz a consulta ao banco para retornar os tweeters dos users que são seguidos
+        // Faz a consulta ao banco para retornar os users que são seguidos
         List<User> getOthersUsers = userById.get().getFollowees()
                 .stream().map(f -> userRepository.findById(f.getId())
                         .get()).collect(Collectors.toList());
 
-        // percorre a lista contendo todos usuarios seguidos, pega os tweeters dele e adiciona na lista que conterá
+        // percorre a lista contendo todos usuarios seguidos, pega os tweeters dos mesmos e adiciona na lista que conterá
         // todos os tweeters
         for (User user : getOthersUsers) {
             getAllTweetersByUserId.addAll(user.getTweets());
         }
 
-        // valida se a lista está limpa, caso não esteja retorna sucesso e a mesma
+        // valida se a lista está vazia, caso não esteja retorna sucesso com a lista preenchida
         if (!getAllTweetersByUserId.isEmpty())
             return ResponseEntity.ok(getAllTweetersByUserId);
 
@@ -87,20 +87,20 @@ public class TweetController {
                 .stream().map(f -> userRepository.findById(f.getId())
                         .get()).collect(Collectors.toList());
 
-        // percorre a lista contendo todos usuarios seguidos, pega os tweeters dele e adiciona na lista que conterá
+        // percorre a lista contendo todos usuarios seguidos, pega os tweeters dos mesmos e adiciona na lista que conterá
         // todos os tweeters
         for (User user : getOthersUsers) {
             getAllTweetersByUserId.addAll(user.getTweets());
         }
 
-        // valida se a lista está limpa, caso não esteja retorna sucesso e a mesma
+        // valida se a lista está vazia, caso não esteja retorna sucesso com a lista preenchida
         if (!getAllTweetersByUserId.isEmpty())
             return ResponseEntity.ok(getAllTweetersByUserId);
 
         return ResponseEntity.notFound().build();
     }
 
-    // metodo para fazer o build do novo tweet com os dados que serão passados pelo body
+    // metodo para fazer o build (conversão) do novo tweet com os dados que serão passados pelo body
     private Tweet buildTweetEntity(Tweet tweet, @Valid TweetDTO tweetDTO) {
         tweet.setDate(new Date());
         tweet.setMessage(tweetDTO.getMessage());

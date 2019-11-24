@@ -38,7 +38,7 @@ public class UserController {
         return ResponseEntity.ok(userRepository.findAll());
     }
 
-    // método para criar o tweet
+    // método para criar o user
     @PostMapping
     private ResponseEntity<?> create(@Valid @RequestBody UserDTO userDTO) {
 
@@ -81,7 +81,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/unfollow")
+    @PutMapping("/unfollow")
     private ResponseEntity<?> unfollow(@RequestBody UserDTO userDTO) {
 
         Optional<User> findById = userRepository.findById(userDTO.getUserId());

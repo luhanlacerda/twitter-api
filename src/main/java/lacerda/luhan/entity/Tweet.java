@@ -38,7 +38,25 @@ public class Tweet {
 
     public Tweet() {
         super();
-        // TODO Auto-generated constructor stub
+        this.user = new User();
+        this.date = new Date();
+    }
+
+    public Tweet(String message, User user, Date date) {
+        this.message = message;
+        this.user = user;
+        this.date = date;
+    }
+
+    public Tweet(String message, User user) {
+        this.message = message;
+        this.user = user;
+        this.date = new Date();
+    }
+
+    public Tweet(String message) {
+        this.message = message;
+        this.date = new Date();
     }
 
     public Long getId() {
