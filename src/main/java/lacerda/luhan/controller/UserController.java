@@ -2,6 +2,7 @@ package lacerda.luhan.controller;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.security.Principal;
 import java.util.Optional;
 
 import lacerda.luhan.dto.UserDTO;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,7 +62,8 @@ public class UserController {
     }
 
     @PutMapping("/follow")
-    private ResponseEntity<?> followUser(@RequestBody UserDTO userDTO) {
+    private ResponseEntity<?> followUser(@RequestBody UserDTO userDTO, Authentication pricipal) {
+    	
 
         Optional<User> findById = userRepository.findById(userDTO.getUserId());
 
@@ -69,9 +72,6 @@ public class UserController {
 
         User user = findById.get();
         Optional<User> anotherUserById = userRepository.findById(userDTO.getAnotherUserId());
-
-        if (!anotherUserById.isPresent())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário a ser seguido não encontrado");
 
         User anotherUser = anotherUserById.get();
 
