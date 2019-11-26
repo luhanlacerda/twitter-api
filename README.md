@@ -7,6 +7,11 @@ Backend: Java + Spring  -  H2  -  Vue.js
 - Através do endpoint http://localhost:8080/init dois usuários pré-cadastrados são inseridos no banco
 
 
+# Usuario e senha JWT
+   - user: admin
+   - pass: password
+
+
 # Endpoints
   ## Users
     http://localhost:8080/users
